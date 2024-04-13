@@ -1,0 +1,223 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+<androidx.cardview.widget.CardView
+    android:elevation="7dp"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_label_project_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Project Name:"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/text_project_name"
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""/>
+
+        <!-- Longitude -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/text_label_longitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Longitude:"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/text_longitude"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/black"
+
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <!-- Latitude -->
+                <TextView
+                    android:id="@+id/text_label_latitude"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Latitude:"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/text_latitude"
+                    android:textColor="@color/black"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+        <!-- Payment Amount -->
+        <TextView
+            android:id="@+id/text_label_payment_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Payment Amount:"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/text_payment_amount"
+            android:textColor="@color/black"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""/>
+
+        <!-- Progress Photo 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_weight="1"
+                    android:id="@+id/text_label_progress_photo1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Progress Photo 1:"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/text_photo1_remark"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/black"
+
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_weight="1"
+                android:id="@+id/image_progress_photo1"
+                android:layout_width="160dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+        <!-- Progress Photo 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_weight="1"
+                    android:id="@+id/text_label_progress_photo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Progress Photo 2:"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/text_photo1_remark2"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/black"
+
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_weight="1"
+                android:id="@+id/image_progress_photo2"
+                android:layout_width="160dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+
+
+        <!-- Physical Progress -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/text_label_physical_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Physical Progress:"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/text_physical_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+
+                    android:text=""/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <!-- Financial Progress -->
+                <TextView
+                    android:id="@+id/text_label_financial_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Financial Progress:"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/text_financial_progress"
+                    android:textColor="@color/black"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+    <!-- Project Name -->
+
+
+
+</LinearLayout>

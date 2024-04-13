@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/purple_200"
+    tools:context=".Login">
+
+
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:gravity="center"
+
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_margin="6dp"
+                    android:src="@drawable/logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"/>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Project Monitoring \nSystem "
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:textColor="@color/white"
+            android:textSize="25dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="@string/app_nameName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textColor="@color/white"
+            android:textSize="25dp"
+            android:gravity="center"
+            android:text="@string/app_UP"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="30dp"
+        android:gravity="center"
+        android:background="@drawable/rounded_login_ui"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Enter information to login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            android:gravity="start"
+            android:text="Sceheme Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_marginTop="2dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:background="@color/grey"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinner_imagetype"
+                android:spinnerMode="dialog"
+                android:paddingLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            android:gravity="start"
+            android:text="User Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <EditText
+                android:id="@+id/etUserName"
+                android:singleLine="true"
+                android:paddingStart="5dp"
+                android:textSize="14dp"
+                android:background="@color/grey"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_marginTop="15dp"
+            android:textColor="@color/black"
+            android:textSize="14dp"
+            android:gravity="start"
+            android:text="Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <EditText
+                android:id="@+id/etPassword"
+                android:paddingStart="5dp"
+                android:singleLine="true"
+                android:textSize="14dp"
+                android:inputType="textPassword"
+                android:paddingEnd="8dp"
+                android:background="@color/grey"
+                android:drawableEnd="@drawable/eye_close_ic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_marginTop="20dp"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:text="LOGIN"
+            android:textColor="@color/white"
+            android:background="@color/greenback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
