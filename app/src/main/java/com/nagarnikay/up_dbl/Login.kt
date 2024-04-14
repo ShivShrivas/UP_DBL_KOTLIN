@@ -18,6 +18,7 @@ import com.google.gson.JsonObject
 import com.nagarnikay.up_dbl.Adapter.SchemesAdapter
 import com.nagarnikay.up_dbl.Model.LoginResponse
 import com.nagarnikay.up_dbl.Model.SchemeData
+import com.nagarnikay.up_dbl.Model.SchemeItem
 import com.nagarnikay.up_dbl.Retrofit.ApiClient
 import com.nagarnikay.up_dbl.Retrofit.ApiInterface
 import com.nagarnikay.up_dbl.Utils.CustomProgress
@@ -50,7 +51,7 @@ class Login : AppCompatActivity() {
 
         spinnerImage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
-                schemeId = (adapterView?.selectedItem as SchemeData).schemeId.toString()
+                schemeId = (adapterView?.selectedItem as SchemeItem).schemeId.toString()
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
@@ -147,8 +148,8 @@ class Login : AppCompatActivity() {
         call.enqueue(object : Callback<SchemeData> {
             override fun onResponse(call: Call<SchemeData>, response: Response<SchemeData>) {
                 if (response.isSuccessful) {
-                    val list: MutableList<SchemeData> = ArrayList()
-                    list.add(response.body()!!)
+                    val list: MutableList<SchemeItem> = ArrayList()
+                    response.body()?.data?.let { list.addAll(it) }
                     schemesAdapter = SchemesAdapter(this@Login, list)
                     spinnerImage.adapter = schemesAdapter
                     customProgress.hideProgress()

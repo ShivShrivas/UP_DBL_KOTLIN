@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.service.controls.ControlsProviderService
 import android.util.Log
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -27,6 +28,7 @@ import androidx.camera.view.PreviewView
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginTop
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -114,9 +116,10 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
         //Get lat and long from viewModel and pass it to overlay
         viewModel.locationUpdates.observe(this, Observer { location ->
             // Remove any existing TextViews from cameraView
+            // Remove all CardViews from cameraView
             for (i in 0 until cameraView.childCount) {
                 val childView = cameraView.getChildAt(i)
-                if (childView is TextView) {
+                if (childView is CardView) {
                     cameraView.removeView(childView)
                 }
             }
@@ -127,23 +130,52 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
                     resources.getDimensionPixelSize(R.dimen.card_height)
                 ).apply {
                     // Align to bottom of parent
-                    //gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+
+                    gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
 
                     // Set margin
-                    //bottomMargin = resources.getDimensionPixelSize(R.dimen.card_margin_bottom)
+                   // bottomMargin = resources.getDimensionPixelSize(R.dimen.card_margin_bottom)
                 }
+                setCardBackgroundColor(ContextCompat.getColor(context, R.color.transparent_black_60))
+
                 //  radius = resources.getDimensionPixelSize(R.dimen.card_corner_radius).toFloat()
             }
             var addressUtil: AddressUtil =AddressUtil(this)
             var fullAddress:String="Latitude: ${location.latitude},\n" +
-                    "Longitude: ${location.longitude}\n${addressUtil.getAddress(location.latitude,location.longitude)}"
+                    "Longitude: ${location.longitude}"
             var textView= TextView(this).apply {
                 text = fullAddress
-                setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
-                gravity =  Gravity.CENTER
+                gravity =  Gravity.CENTER_HORIZONTAL or Gravity.TOP
+
+            }
+            val marginInDp = 5 // Margin in dp
+            val marginInPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                marginInDp.toFloat(),
+                resources.displayMetrics
+            ).toInt()
+
+            val layoutParamsBottom = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                bottomMargin = marginInPx // Set bottom margin
+                leftMargin = marginInPx*3 // Set bottom margin
+                rightMargin = marginInPx*3 // Set bottom margin
+                // Set bottom margin
+            }
+            var textView1= TextView(this).apply {
+                text = "${addressUtil.getAddress(location.latitude,location.longitude)}"
+                setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+                setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
+                layoutParams=layoutParamsBottom
+
             }
             cardView.addView(textView)
+            cardView.addView(textView1)
             cameraView.addView(cardView)
 
         })
@@ -243,16 +275,24 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
 //            resources.getDimensionPixelSize(R.dimen.card_height))
 //        view.layout(0, 0, resources.getDimensionPixelSize(R.dimen.card_width),
 //            resources.getDimensionPixelSize(R.dimen.card_height))
-        val cardWidth = resources.getDimensionPixelSize(R.dimen.card_width)
+        val cardWidth =  canvas.width
         val cardHeight = resources.getDimensionPixelSize(R.dimen.card_height)
         val canvasWidth = canvas.width
         val canvasHeight = canvas.height
-        val left = (canvasWidth - cardWidth) / 2 // Center horizontally
-        val top = canvasHeight - cardHeight // At the bottom
 
-        // Set the position for the view
-        view.layout(left, top, left + cardWidth, top + cardHeight)
+// Calculate left position to center the view horizontally at the bottom of the canvas
+        val left = (canvasWidth - cardWidth) / 2
+
+// Calculate top position to place the view at the bottom of the canvas
+        val top = canvasHeight - cardHeight
+
+
         // Draw the view onto the canvas
+        canvas.translate(left.toFloat(), top.toFloat())
+// Set the position for the view
+        view.layout(left, top, left + cardWidth, top + cardHeight)
+
+// Draw the view onto the canvas
         view.draw(canvas)
     }
     private fun saveCompositeImage(bitmap: Bitmap) {

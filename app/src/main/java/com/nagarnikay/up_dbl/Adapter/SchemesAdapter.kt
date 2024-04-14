@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.nagarnikay.up_dbl.Model.SchemeData
+import com.nagarnikay.up_dbl.Model.SchemeItem
 import com.nagarnikay.up_dbl.R
 
 
-class SchemesAdapter(context: Context, yearItems: List<SchemeData>) :
-    ArrayAdapter<SchemeData>(context, 0, yearItems) {
+class SchemesAdapter(context: Context, yearItems: List<SchemeItem>) :
+    ArrayAdapter<SchemeItem>(context, 0, yearItems) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         return createItemView(position, convertView, parent)
@@ -28,9 +29,9 @@ class SchemesAdapter(context: Context, yearItems: List<SchemeData>) :
             convertViewVar = LayoutInflater.from(context).inflate(R.layout.spinner_category_item, parent, false)
         }
         val textView = convertViewVar!!.findViewById<TextView>(R.id.text_distname)
-        val schemeData = getItem(position)
-        if (schemeData != null) {
-            textView.text = schemeData.schemename
+        val SchemeItem = getItem(position)
+        if (SchemeItem != null) {
+            textView.text = SchemeItem.schemename
         }
         return convertViewVar
     }

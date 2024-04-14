@@ -13,11 +13,7 @@ class SchemeData {
     @Expose
     var respMessage: String? = null
 
-    @SerializedName("Schemename")
+    @SerializedName("Data")
     @Expose
-    var schemename: String? = null
-
-    @SerializedName("SchemeId")
-    @Expose
-    var schemeId: Int? = null
+    var data:List<SchemeItem>?=null
 }

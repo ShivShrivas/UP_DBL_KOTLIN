@@ -392,24 +392,24 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchSchemes(yearId: Int) {
-        val apiService = ApiClient.getClient().create(ApiInterface::class.java)
-        val call = apiService.getSchemes("CMNSYUSER", "12345", yearId.toString())
-        call.enqueue(object : Callback<SchemeData> {
-            override fun onResponse(call: Call<SchemeData>, response: Response<SchemeData>) {
-                if (response.isSuccessful) {
-                    val list = ArrayList<SchemeData>()
-                    list.add(response.body()!!)
-                    schemesAdapter = SchemesAdapter(this@HomeActivity, list)
-                    spinScheme.adapter = schemesAdapter
-                }
-            }
-
-            override fun onFailure(call: Call<SchemeData>, t: Throwable) {
-                // Handle failure
-            }
-        })
-    }
+//    private fun fetchSchemes(yearId: Int) {
+//        val apiService = ApiClient.getClient().create(ApiInterface::class.java)
+//        val call = apiService.getSchemes("CMNSYUSER", "12345", yearId.toString())
+//        call.enqueue(object : Callback<SchemeData> {
+//            override fun onResponse(call: Call<SchemeData>, response: Response<SchemeData>) {
+//                if (response.isSuccessful) {
+//                    val list = ArrayList<SchemeData>()
+//                    list.add(response.body()!!)
+//                    schemesAdapter = SchemesAdapter(this@HomeActivity, list)
+//                    spinScheme.adapter = schemesAdapter
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<SchemeData>, t: Throwable) {
+//                // Handle failure
+//            }
+//        })
+//    }
     private fun loadAndConvertImage(filePath: String): Bitmap? {
         // Load the image file from the file path
 

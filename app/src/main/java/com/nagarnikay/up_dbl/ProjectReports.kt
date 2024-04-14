@@ -21,6 +21,7 @@ import com.nagarnikay.up_dbl.Model.FinancialYearResponse
 import com.nagarnikay.up_dbl.Model.LoginResponse
 import com.nagarnikay.up_dbl.Model.ProjectReportsResponse
 import com.nagarnikay.up_dbl.Model.SchemeData
+import com.nagarnikay.up_dbl.Model.SchemeItem
 import com.nagarnikay.up_dbl.Retrofit.ApiClient
 import com.nagarnikay.up_dbl.Retrofit.ApiInterface
 import com.nagarnikay.up_dbl.Utils.MySharedPreferences
@@ -105,7 +106,7 @@ class ProjectReports : AppCompatActivity() {
         jsonObject.addProperty("OfficeId", 0)
         jsonObject.addProperty("FinYearId", (spinFI.selectedItem as FIData).yearId)
         jsonObject.addProperty("ProcId", 1)
-        jsonObject.addProperty("SchemeId", (spinScheme.selectedItem as SchemeData).schemeId)
+        jsonObject.addProperty("SchemeId", (spinScheme.selectedItem as SchemeItem).schemeId)
         jsonObject.addProperty("FromDate", txtFromDate.text.toString().trim())
         jsonObject.addProperty("ToDate", txtToDate.text.toString().trim())
         return jsonObject
@@ -128,8 +129,8 @@ class ProjectReports : AppCompatActivity() {
         call.enqueue(object : Callback<SchemeData> {
             override fun onResponse(call: Call<SchemeData>, response: Response<SchemeData>) {
                 if (response.isSuccessful) {
-                    val list = ArrayList<SchemeData>()
-                    list.add(response.body() ?: SchemeData())
+                    val list = ArrayList<SchemeItem>()
+                    response.body()?.data?.let { list.addAll(it) }
                     schemesAdapter = SchemesAdapter(this@ProjectReports, list)
                     spinScheme.adapter = schemesAdapter
                 }
