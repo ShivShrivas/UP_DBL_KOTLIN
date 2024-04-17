@@ -1,6 +1,8 @@
 package com.nagarnikay.up_dbl.GPSCamera
 
 import android.Manifest
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -8,14 +10,18 @@ import android.graphics.Canvas
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.Settings
 import android.service.controls.ControlsProviderService
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +49,7 @@ import com.tooncoder.livelook.LocationViewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.OutputStream
 
 class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
 
@@ -126,29 +133,30 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
             cardView = CardView(this).apply {
                 // Set layout parameters to wrap_content
                 layoutParams = FrameLayout.LayoutParams(
-                    resources.getDimensionPixelSize(R.dimen.card_width),
-                    resources.getDimensionPixelSize(R.dimen.card_height)
+                   ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT // Set height to wrap_content
                 ).apply {
                     // Align to bottom of parent
-
                     gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
 
                     // Set margin
-                   // bottomMargin = resources.getDimensionPixelSize(R.dimen.card_margin_bottom)
+                     bottomMargin = resources.getDimensionPixelSize(R.dimen.card_margin_bottom)
+                     topMargin = resources.getDimensionPixelSize(R.dimen.card_margin_bottom)
                 }
                 setCardBackgroundColor(ContextCompat.getColor(context, R.color.transparent_black_60))
 
-                //  radius = resources.getDimensionPixelSize(R.dimen.card_corner_radius).toFloat()
+                // Set other attributes as needed
+                // radius = resources.getDimensionPixelSize(R.dimen.card_corner_radius).toFloat()
             }
             var addressUtil: AddressUtil =AddressUtil(this)
-            var fullAddress:String="Latitude: ${location.latitude},\n" +
+            var fullAddress:String="Latitude: ${location.latitude}\n" +
                     "Longitude: ${location.longitude}"
             var textView= TextView(this).apply {
                 text = fullAddress
                 setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
                 gravity =  Gravity.CENTER_HORIZONTAL or Gravity.TOP
-
+                textSize=14.0f
             }
             val marginInDp = 5 // Margin in dp
             val marginInPx = TypedValue.applyDimension(
@@ -162,7 +170,6 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
                 FrameLayout.LayoutParams.WRAP_CONTENT
             ).apply {
                 gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-                bottomMargin = marginInPx // Set bottom margin
                 leftMargin = marginInPx*3 // Set bottom margin
                 rightMargin = marginInPx*3 // Set bottom margin
                 // Set bottom margin
@@ -172,10 +179,22 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
                 setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
                 layoutParams=layoutParamsBottom
+                textSize= 14.0f
+                maxLines=3
 
             }
-            cardView.addView(textView)
-            cardView.addView(textView1)
+            val linearLayout = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity =Gravity.CENTER
+
+
+
+
+            }
+
+            linearLayout.addView(textView)
+            linearLayout.addView(textView1)
+            cardView.addView(linearLayout)
             cameraView.addView(cardView)
 
         })
@@ -266,6 +285,7 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
         // Save the composite image
         if (resultBitmap != null) {
             saveCompositeImage(resultBitmap)
+            saveImageToCameraFolder(this@CameraPriviewPage,resultBitmap)
         }
     }
     private fun drawViewToCanvas(view: CardView, canvas: Canvas) {
@@ -276,7 +296,7 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
 //        view.layout(0, 0, resources.getDimensionPixelSize(R.dimen.card_width),
 //            resources.getDimensionPixelSize(R.dimen.card_height))
         val cardWidth =  canvas.width
-        val cardHeight = resources.getDimensionPixelSize(R.dimen.card_height)
+        val cardHeight = view.height
         val canvasWidth = canvas.width
         val canvasHeight = canvas.height
 
@@ -308,6 +328,47 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
             }
         } catch (e: IOException) {
             Log.e("TAG", "Error saving composite image: ${e.message}", e)
+        }
+    }
+    fun saveImageToCameraFolder(context: Context, bitmap: Bitmap): Boolean {
+        // Check if external storage is available
+        if (Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED) {
+            return false
+        }
+
+        // Get the directory for saving images
+        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+        val folder = File(directory, "Camera")
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+
+        // Create a file name for the image
+        val fileName = "IMG_${System.currentTimeMillis()}.jpg"
+        val file = File(folder, fileName)
+
+        // Save the bitmap to the file
+        var outputStream: OutputStream? = null
+        try {
+            outputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+
+            // Insert image into the MediaStore
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                put(MediaStore.Images.Media.RELATIVE_PATH, "DCIM/Camera")
+            }
+            context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        } finally {
+            outputStream?.close()
         }
     }
     private fun getOutputFile(): File {

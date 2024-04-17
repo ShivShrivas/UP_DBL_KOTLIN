@@ -42,16 +42,17 @@ class ProjectReports : AppCompatActivity() {
     private lateinit var schemesAdapter: SchemesAdapter
     private lateinit var yearSpinnerAdapter: YearSpinnerAdapter
     private lateinit var loginResponse: LoginResponse
+    private lateinit var schId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_reports)
-
         supportActionBar?.apply {
             title = "UP-DLB Project Reports"
             setDisplayHomeAsUpEnabled(true)
         }
-
+        intent=getIntent()
+        schId=intent.getStringExtra("SchId").toString()
         loginResponse = MySharedPreferences.getLoginObject(this, LoginResponse::class.java)!!
 
         spinFI = findViewById(R.id.spinFI)
@@ -106,7 +107,7 @@ class ProjectReports : AppCompatActivity() {
         jsonObject.addProperty("OfficeId", 0)
         jsonObject.addProperty("FinYearId", (spinFI.selectedItem as FIData).yearId)
         jsonObject.addProperty("ProcId", 1)
-        jsonObject.addProperty("SchemeId", (spinScheme.selectedItem as SchemeItem).schemeId)
+        jsonObject.addProperty("SchemeId", schId)
         jsonObject.addProperty("FromDate", txtFromDate.text.toString().trim())
         jsonObject.addProperty("ToDate", txtToDate.text.toString().trim())
         return jsonObject
@@ -125,7 +126,7 @@ class ProjectReports : AppCompatActivity() {
 
     private fun fetchSchemes() {
         val apiService = ApiClient.getClient().create(ApiInterface::class.java)
-        val call = apiService.getSchemes("CMNSYUSER", "12345", loginResponse.schemeid.toString())
+        val call = apiService.getSchemes("CMNSYUSER", "12345", schId)
         call.enqueue(object : Callback<SchemeData> {
             override fun onResponse(call: Call<SchemeData>, response: Response<SchemeData>) {
                 if (response.isSuccessful) {
@@ -143,7 +144,7 @@ class ProjectReports : AppCompatActivity() {
 
     private fun fetchFI() {
         val apiService = ApiClient.getClient().create(ApiInterface::class.java)
-        val call = apiService.getFinancial("CMNSYUSER", "12345", "1", loginResponse.schemeid.toString())
+        val call = apiService.getFinancial("CMNSYUSER", "12345", "1", schId)
         call.enqueue(object : Callback<FinancialYearResponse> {
             override fun onResponse(
                 call: Call<FinancialYearResponse>,

@@ -31,6 +31,7 @@ class Login : AppCompatActivity() {
 
     private lateinit var spinnerImage: Spinner
     private lateinit var schemeId: String
+    private lateinit var schemeName: String
     private lateinit var btnLogin: Button
     private lateinit var etPassword: EditText
     private lateinit var etUserName: EditText
@@ -52,6 +53,7 @@ class Login : AppCompatActivity() {
         spinnerImage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, i: Int, l: Long) {
                 schemeId = (adapterView?.selectedItem as SchemeItem).schemeId.toString()
+                schemeName = (adapterView?.selectedItem as SchemeItem).schemename.toString()
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
@@ -99,14 +101,16 @@ class Login : AppCompatActivity() {
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 Log.d("TAG", "onResponse: " + response.body()?.respMessage)
-                if (response.isSuccessful && response.body()?.respCode == "101") {
+                if (response.isSuccessful && response.body()?.respCode == "101" && response.body()?.respMessage.equals("success")) {
                     MySharedPreferences.saveLoginObject(applicationContext, response.body()!!)
                     customProgress.hideProgress()
                     val intent = Intent(this@Login, HomeActivity::class.java)
+                    intent.putExtra("SchName",schemeName)
+                    intent.putExtra("SchId",schemeId)
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(this@Login, "Please enter correct username and password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@Login, response.body()?.respMessage, Toast.LENGTH_SHORT).show()
                     customProgress.hideProgress()
                 }
             }

@@ -68,8 +68,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         image_data = findViewById(R.id.image_data)
         image_data1 = findViewById(R.id.image_data1)
-        Glide.with(this).load(R.drawable.ofaf).into(image_data)
-        Glide.with(this).load(R.drawable.gps).into(image_data1)
+        Glide.with(this).load(R.drawable.gps).into(image_data)
+        Glide.with(this).load(R.drawable.ofaf).into(image_data1)
 
         if (!checkPermissions()) {
             requestPermissions()

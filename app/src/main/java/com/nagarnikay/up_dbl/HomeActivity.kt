@@ -66,6 +66,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var spinProject: AppCompatSpinner
     private lateinit var txtLongitude: TextView
     private lateinit var txtLattitude: TextView
+    private lateinit var txtSchName: TextView
     private lateinit var llAfterWorkImage: LinearLayout
     private lateinit var llBeforeWorkImage: LinearLayout
     private lateinit var aftImageView: ImageView
@@ -87,6 +88,9 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var schemesAdapter: SchemesAdapter
     private lateinit var schemeData: SchemeData
     private lateinit var fiData: FIData
+    private lateinit var schName: String
+    private lateinit var schId: String
+    private lateinit var intent: Intent
 
     private var currentPhotoPathBefWork: String = ""
     private var currentPhotoPathAftWork: String = ""
@@ -94,22 +98,29 @@ class HomeActivity : AppCompatActivity() {
     private val REQUEST_IMAGE_CAPTURE_BEFORE_WORK = 100
     private val REQUEST_IMAGE_CAPTURE_AFTER_WORK = 200
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         if (supportActionBar != null) {
             supportActionBar?.hide()
         }
+        intent=getIntent()
         customProgress = CustomProgress
         loginResponse = MySharedPreferences.getLoginObject(this, LoginResponse::class.java)!!
         gpsTracker = GpsTracker(this)
+        schName=intent.getStringExtra("SchName").toString()
+        schId=intent.getStringExtra("SchId").toString()
+
         initView()
         initListeners()
+
 
     }
 
     private fun initView() {
         txtLongitude = findViewById(R.id.txtLongitude)
+        txtSchName = findViewById(R.id.txtSchName)
         btn_logout = findViewById(R.id.btn_logout)
         fab_reports = findViewById(R.id.fab_reports)
         txtLattitude = findViewById(R.id.txtLattitude)
@@ -132,15 +143,20 @@ class HomeActivity : AppCompatActivity() {
         username.text = loginResponse.officeName.toString()
         txtOfficeCode.text = loginResponse.officeId.toString()
         btnSubmintData = findViewById(R.id.btnSubmintData)
+        txtSchName.setText(schName)
+
     }
 
     private fun initListeners() {
+
         btn_logout.setOnClickListener {
             startActivity(Intent(this@HomeActivity, Login::class.java))
             finish()
         }
         fab_reports.setOnClickListener {
-            startActivity(Intent(this@HomeActivity, ProjectReports::class.java))
+            val intent=Intent(this@HomeActivity, ProjectReports::class.java)
+            intent.putExtra("SchId",schId)
+            startActivity(intent)
         }
         btnSubmintData.setOnClickListener {
             if (dataValidated()) {
@@ -217,7 +233,7 @@ class HomeActivity : AppCompatActivity() {
 
         val apiService = ApiClient.getClient().create(ApiInterface::class.java)
 
-        val call = apiService.submitData("CMNSYUSER", "12345", 0,loginResponse.officeId!!, projectId!!,"NA", "NA", "NA", gpsTracker.getLongitude(), gpsTracker.getLatitude(), etBefWorkRemark.text.toString(), etAftWorkRemark.text.toString(), fiId!!, 1, schemeId!!, etPhysicalWorkPercent.text.toString().trim().toFloat(), etFinanceWorkPercent.text.toString().trim().toFloat(), workStatusId!!, DateUtils.getCurrentDateAsString(), befWorkImagePart, befWorkImagePart, aftWorkImagePart)
+        val call = apiService.submitData("CMNSYUSER", "12345", 0, projectId!!,loginResponse.officeId!!,"NA", "NA", "NA", gpsTracker.getLongitude(), gpsTracker.getLatitude(), etBefWorkRemark.text.toString(), etAftWorkRemark.text.toString(), fiId!!, 1, schId.toInt(), etPhysicalWorkPercent.text.toString().trim().toFloat(), etFinanceWorkPercent.text.toString().trim().toFloat(), workStatusId!!, DateUtils.getCurrentDateAsString(), befWorkImagePart, befWorkImagePart, aftWorkImagePart)
 
         call.enqueue(object : Callback<DataSubmitResponse> {
                 override fun onResponse(call: Call<DataSubmitResponse>, response: Response<DataSubmitResponse>) {
