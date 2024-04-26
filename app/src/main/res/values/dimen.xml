@@ -8,5 +8,5 @@
     <dimen name="card_width">400dp</dimen>
     <dimen name="card_height">90dp</dimen>
     <dimen name="card_corner_radius">15dp</dimen>
-    <dimen name="card_margin_bottom">10dp</dimen>
+    <dimen name="card_margin_bottom">20dp</dimen>
 </resources>

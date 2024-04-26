@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Typeface
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -32,6 +33,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.cardview.widget.CardView
+import androidx.compose.ui.text.toUpperCase
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
@@ -50,6 +52,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.TimeZone
 
 class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
 
@@ -112,6 +117,13 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    fun getCurrentFullDateTime(): String {
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("dd/MM/yy hh:mm a 'GMT' Z")
+        dateFormat.timeZone = TimeZone.getDefault()
+        return dateFormat.format(calendar.time)
+    }
+
     private fun startCamera() {
 
         val width = cameraView.width
@@ -149,14 +161,16 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
                 // radius = resources.getDimensionPixelSize(R.dimen.card_corner_radius).toFloat()
             }
             var addressUtil: AddressUtil =AddressUtil(this)
-            var fullAddress:String="Latitude: ${location.latitude}\n" +
-                    "Longitude: ${location.longitude}"
+            var fullAddress:String="Lat:(${location.latitude}) \n" +
+                    "Long:(${location.longitude}) (${location.accuracy}mtr)"
             var textView= TextView(this).apply {
                 text = fullAddress
                 setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
-                gravity =  Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                gravity =  Gravity.CENTER or Gravity.TOP
                 textSize=14.0f
+                setTypeface(null, Typeface.BOLD)
+
             }
             val marginInDp = 5 // Margin in dp
             val marginInPx = TypedValue.applyDimension(
@@ -175,18 +189,21 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
                 // Set bottom margin
             }
             var textView1= TextView(this).apply {
-                text = "${addressUtil.getAddress(location.latitude,location.longitude)}"
-                setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+                text = "\n${addressUtil.getAddress(location.latitude,location.longitude)}${getCurrentFullDateTime().toUpperCase()}"
+                setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
                 layoutParams=layoutParamsBottom
                 textSize= 14.0f
-                maxLines=3
+                maxLines=5
+                gravity = Gravity.CENTER
+                setTypeface(null, Typeface.BOLD) // Make text bold
 
             }
             val linearLayout = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 gravity =Gravity.CENTER
-
+                LinearLayout.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.WRAP_CONTENT
 
 
 
