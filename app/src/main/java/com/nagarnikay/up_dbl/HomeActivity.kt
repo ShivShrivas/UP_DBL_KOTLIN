@@ -206,11 +206,11 @@ class HomeActivity : AppCompatActivity() {
             startActivityForResult(intent, 1200)
         }
         befImageView.setOnClickListener {
-            val dialogFragment = ImageDialogFragment.newInstance(currentPhotoPathBefWork)
+            val dialogFragment = ImageDialogFragment.newInstance(currentPhotoPathBefWork, this@HomeActivity)
             dialogFragment.show(supportFragmentManager, "ImageDialogFragment")
         }
         aftImageView.setOnClickListener {
-            val dialogFragment = ImageDialogFragment.newInstance(currentPhotoPathAftWork)
+            val dialogFragment = ImageDialogFragment.newInstance(currentPhotoPathAftWork, this@HomeActivity)
             dialogFragment.show(supportFragmentManager, "ImageDialogFragment")
         }
         fetchFI()
@@ -311,7 +311,7 @@ class HomeActivity : AppCompatActivity() {
     private fun fetchAllProject(schemeId: Int, yearId: Int) {
         customProgress.showProgress(this@HomeActivity, "Just a second...", false)
         val apiService = ApiClient.getClient().create(ApiInterface::class.java)
-        val call = apiService.getAllProjects("CMNSYUSER", "12345", "1", loginResponse.officeId.toString(), yearId.toString(), schemeId.toString())
+        val call = apiService.getAllProjects("CMNSYUSER", "12345", "1", loginResponse.officeId.toString(), yearId.toString(), schemeId.toString(),loginResponse.userType!!)
         call.enqueue(object : Callback<AllProjectsResponse> {
             override fun onResponse(call: Call<AllProjectsResponse>, response: Response<AllProjectsResponse>) {
                 if (response.isSuccessful) {

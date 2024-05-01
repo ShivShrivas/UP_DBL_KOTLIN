@@ -31,4 +31,8 @@ class LoginResponse {
     @SerializedName("Schemeid")
     @Expose
     var schemeid: Int? = null
+
+    @SerializedName("UserType")
+    @Expose
+    var userType: Int? = null
 }

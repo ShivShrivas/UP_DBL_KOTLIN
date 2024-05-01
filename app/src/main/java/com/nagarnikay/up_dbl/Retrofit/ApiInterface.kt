@@ -79,7 +79,8 @@ interface ApiInterface {
         @Field("Procid") Procid: String,
         @Field("OfficeId") OfficeId: String,
         @Field("FinYearId") FinYearId: String,
-        @Field("SchemeId") SchemeId: String
+        @Field("SchemeId") SchemeId: String,
+        @Field("UserType") UserType: Int
     ): Call<AllProjectsResponse>
 
     @Multipart

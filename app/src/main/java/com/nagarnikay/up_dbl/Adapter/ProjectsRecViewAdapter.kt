@@ -8,13 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.bumptech.glide.Glide
 import com.nagarnikay.up_dbl.Model.ProjectReportData
 import com.nagarnikay.up_dbl.R
+import com.nagarnikay.up_dbl.Utils.ImageDialogFragment
 
-class ProjectsRecViewAdapter(private val context: Context, private val data: List<ProjectReportData>) :
+class ProjectsRecViewAdapter(
+    private val context: Context,
+    private val data: List<ProjectReportData>,
+   private val supportFragmentManager: FragmentManager
+) :
     RecyclerView.Adapter<ProjectsRecViewAdapter.ProjectViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
@@ -45,6 +51,15 @@ class ProjectsRecViewAdapter(private val context: Context, private val data: Lis
                 .placeholder(R.drawable.no_image_ic)
                 .centerCrop()
                 .into(progressPhoto2ImageView)
+            holder.progressPhoto1ImageView.setOnClickListener {
+                val dialogFragment = ImageDialogFragment.newInstance(projectData.progressPhoto1.toString(), holder.itemView.context)
+                dialogFragment.show(supportFragmentManager, "ImageDialogFragment")
+            }
+
+            holder.progressPhoto2ImageView.setOnClickListener {
+                val dialogFragment = ImageDialogFragment.newInstance(projectData.progressPhoto2.toString(), holder.itemView.context)
+                dialogFragment.show(supportFragmentManager, "ImageDialogFragment")
+            }
         }
     }
 

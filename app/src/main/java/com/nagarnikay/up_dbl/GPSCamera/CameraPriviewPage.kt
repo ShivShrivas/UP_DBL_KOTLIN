@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -189,12 +190,11 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
                 // Set bottom margin
             }
             var textView1= TextView(this).apply {
-                text = "\n${addressUtil.getAddress(location.latitude,location.longitude)}${getCurrentFullDateTime().toUpperCase()}"
+                text = "\n${addressUtil.getAddress(location.latitude,location.longitude )}${getCurrentFullDateTime().toUpperCase()}"
                 setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
                 layoutParams=layoutParamsBottom
                 textSize= 14.0f
-                maxLines=5
                 gravity = Gravity.CENTER
                 setTypeface(null, Typeface.BOLD) // Make text bold
 
@@ -208,10 +208,29 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
 
 
             }
+            val mainLinearLayout =LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity =Gravity.CENTER
+                LinearLayout.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+            val imageView = ImageView(this@CameraPriviewPage)
+            // Set the image resource or other properties of the ImageView as needed
+            imageView.setImageResource(R.drawable.updbllogo)
+
+            // Set the height and width of the ImageView
+            val params = LinearLayout.LayoutParams(
+                dpToPx(60), // 30dp converted to pixels
+                dpToPx(60),
+                
+            )
+            imageView.layoutParams = params
 
             linearLayout.addView(textView)
             linearLayout.addView(textView1)
-            cardView.addView(linearLayout)
+            mainLinearLayout.addView(imageView)
+            mainLinearLayout.addView(linearLayout)
+            cardView.addView(mainLinearLayout)
             cameraView.addView(cardView)
 
         })
@@ -269,7 +288,10 @@ class CameraPriviewPage  : AppCompatActivity(), OnMapReadyCallback {
         }
 
     }
-
+    fun Context.dpToPx(dp: Int): Int {
+        val density: Float = resources.displayMetrics.density
+        return (dp * density).toInt()
+    }
     private fun compositeOverlayAndImage(cardView:CardView) {
 
         val cameraBitmap = cameraView.bitmap

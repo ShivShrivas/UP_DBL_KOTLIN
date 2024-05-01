@@ -3,7 +3,6 @@ package com.nagarnikay.up_dbl
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +23,7 @@ import com.nagarnikay.up_dbl.Model.SchemeData
 import com.nagarnikay.up_dbl.Model.SchemeItem
 import com.nagarnikay.up_dbl.Retrofit.ApiClient
 import com.nagarnikay.up_dbl.Retrofit.ApiInterface
+import com.nagarnikay.up_dbl.Utils.CustomProgress
 import com.nagarnikay.up_dbl.Utils.MySharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,7 +43,7 @@ class ProjectReports : AppCompatActivity() {
     private lateinit var yearSpinnerAdapter: YearSpinnerAdapter
     private lateinit var loginResponse: LoginResponse
     private lateinit var schId: String
-
+    private lateinit var customProgress: CustomProgress
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_reports)
@@ -54,7 +54,7 @@ class ProjectReports : AppCompatActivity() {
         intent=getIntent()
         schId=intent.getStringExtra("SchId").toString()
         loginResponse = MySharedPreferences.getLoginObject(this, LoginResponse::class.java)!!
-
+        customProgress = CustomProgress
         spinFI = findViewById(R.id.spinFI)
         spinScheme = findViewById(R.id.spinScheme)
         txtToDate = findViewById(R.id.txtToDate)
@@ -77,6 +77,7 @@ class ProjectReports : AppCompatActivity() {
     }
 
     private fun getProjectReport() {
+        customProgress.showProgress(this@ProjectReports, "Data Fetching...", false)
         val apiService = ApiClient.getClient().create(ApiInterface::class.java)
         val call = apiService.getProjectReports(getJsonObj())
         call.enqueue(object : Callback<ProjectReportsResponse> {
@@ -84,18 +85,36 @@ class ProjectReports : AppCompatActivity() {
                 call: Call<ProjectReportsResponse>,
                 response: Response<ProjectReportsResponse>
             ) {
+                Log.d("TAG", "onResponse: ${response.body()}")
                 if (response.isSuccessful) {
                     val projectReportsResponse = response.body()
-                    Log.d("TAG", "onResponse: ${projectReportsResponse?.respMessage}")
-                    val projectsRecViewAdapter =
-                        ProjectsRecViewAdapter(this@ProjectReports, projectReportsResponse?.data ?: ArrayList())
-                    recViewReports.adapter = projectsRecViewAdapter
-                    projectsRecViewAdapter.notifyDataSetChanged()
+
+                        if (projectReportsResponse!!.data==null){
+                            Toast.makeText(this@ProjectReports, "Data not found..." , Toast.LENGTH_SHORT).show()
+                            customProgress.hideProgress()
+                        }else{
+                            val projectsRecViewAdapter =
+                                ProjectsRecViewAdapter(this@ProjectReports, projectReportsResponse?.data ?: ArrayList(),supportFragmentManager)
+                            recViewReports.adapter = projectsRecViewAdapter
+                            projectsRecViewAdapter.notifyDataSetChanged()
+                            customProgress.hideProgress()
+
+                        }
+                    customProgress.hideProgress()
+
+                }else{
+                    Toast.makeText(this@ProjectReports, "Data not fetched" , Toast.LENGTH_SHORT).show()
+                    customProgress.hideProgress()
+
                 }
             }
 
             override fun onFailure(call: Call<ProjectReportsResponse>, t: Throwable) {
                 Log.d("TAG", "onFailure: ${t.message}")
+                Toast.makeText(this@ProjectReports, "Something went wrong..." , Toast.LENGTH_SHORT).show()
+                customProgress.hideProgress()
+
+
             }
         })
     }
@@ -104,10 +123,11 @@ class ProjectReports : AppCompatActivity() {
         val jsonObject = JsonObject()
         jsonObject.addProperty("ApiUserName", "CMNSYUSER")
         jsonObject.addProperty("Token", "12345")
-        jsonObject.addProperty("OfficeId", 0)
+        jsonObject.addProperty("OfficeId", loginResponse.officeId!!)
         jsonObject.addProperty("FinYearId", (spinFI.selectedItem as FIData).yearId)
         jsonObject.addProperty("ProcId", 1)
         jsonObject.addProperty("SchemeId", schId)
+        jsonObject.addProperty("UserType", loginResponse.userType!!)
         jsonObject.addProperty("FromDate", txtFromDate.text.toString().trim())
         jsonObject.addProperty("ToDate", txtToDate.text.toString().trim())
         return jsonObject
